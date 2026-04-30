@@ -469,18 +469,12 @@ function lDS(lbl,data,col,bg){return{label:lbl,data,borderColor:col,backgroundCo
 function fmtDate(raw){if(!raw)return'?';if(raw.includes('-')&&raw.length>=10)return raw.substring(8,10)+'/'+raw.substring(5,7)+'/'+raw.substring(2,4);return raw.substring(0,8);}
 
 let CI={};
+let CHART_DAILY60=null;
 function mk(id,type,labels,datasets,opts={}){
   const el=document.getElementById(id);if(!el)return;
-  // Destroy existing instance if tracked
-  if(el._chartjs_instance){
-    try{el._chartjs_instance.destroy();}catch(e){}
-    el._chartjs_instance=null;
-  }
-  // Replace canvas with a fresh clone to clear ALL Chart.js internal state
-  const fresh=el.cloneNode(false);
-  el.parentNode.replaceChild(fresh,el);
+  if(CI[id])CI[id].destroy();
   const ep=opts.extraPlugins||[];
-  const chart=new Chart(fresh,{type,data:{labels,datasets},plugins:ep,options:{
+  CI[id]=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
     animation:false,responsive:true,maintainAspectRatio:true,
     plugins:{legend:{labels:{boxWidth:9,padding:8,font:{size:9}}},...(opts.plugins||{})},
     scales:type==='doughnut'||type==='pie'?undefined:{
@@ -488,8 +482,6 @@ function mk(id,type,labels,datasets,opts={}){
       y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true,...(opts.yS||{})}
     }
   }});
-  fresh._chartjs_instance=chart;
-  CI[id]=chart;
 }
 
 // ── FRESHNESS ────────────────────────────────
@@ -977,11 +969,34 @@ function bDaily60(){
   const lbl60=dwin.map(d=>'D-'+d);
   const dat26=dwin.map(d=>d<tdtf?null:(DTF26[d]?Object.values(DTF26[d]).reduce((s,v)=>s+(v.t||0),0):0));
   const dat25=dwin.map(d=>DTF25[d]?Object.values(DTF25[d]).reduce((s,v)=>s+(v.t||0),0):null);
-  mk('c-daily-60','line',lbl60,[
-    lDS('2026',dat26,Y26,Y26b),
-    lDS('2025 (same DTF)',dat25,Y25,Y25b)
-  ],{plugins:{legend:{position:'top'}},yS:{beginAtZero:true}});
+  if(CHART_DAILY60){
+    // Chart already exists — just update data, no destroy needed
+    CHART_DAILY60.data.labels=lbl60;
+    CHART_DAILY60.data.datasets[0].data=dat26;
+    CHART_DAILY60.data.datasets[1].data=dat25;
+    CHART_DAILY60.update();
+  } else {
+    // First time — create chart once
+    const el=document.getElementById('c-daily-60');
+    if(!el)return;
+    CHART_DAILY60=new Chart(el,{
+      type:'line',
+      data:{labels:lbl60,datasets:[
+        {label:'2026',data:dat26,borderColor:Y26,backgroundColor:Y26b,borderWidth:2,pointRadius:0,fill:true,tension:.25,spanGaps:false},
+        {label:'2025 (same DTF)',data:dat25,borderColor:Y25,backgroundColor:Y25b,borderWidth:2,pointRadius:0,fill:true,tension:.25,spanGaps:false}
+      ]},
+      options:{
+        animation:false,responsive:true,maintainAspectRatio:true,
+        plugins:{legend:{position:'top',labels:{boxWidth:9,padding:8,font:{size:9}}}},
+        scales:{
+          x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{maxTicksLimit:12,font:{size:9}}},
+          y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true}
+        }
+      }
+    });
+  }
 }
+
 function buildAll(){bOv();bDaily60();bDetail();bTrends();bRev();bWav();}
 
 // ── DETAIL TAB ───────────────────────────────
