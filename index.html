@@ -228,7 +228,6 @@ tbody tr:hover td{filter:brightness(.97);}
     <div class="th">Past 10 days — tickets by type (detail)</div>
     <table id="tbl-d10"></table>
   </div>
-    <canvas id="c-daily-60" height="130"></canvas>
   </div>
   <div class="card g1" style="margin-top:13px">
     <div class="ct">Daily ticket sales — D-(today+30) to D-(today-30)
@@ -455,7 +454,7 @@ function fmtDate(raw){if(!raw)return'?';if(raw.includes('-')&&raw.length>=10)ret
 let CI={};
 function mk(id,type,labels,datasets,opts={}){
   const el=document.getElementById(id);if(!el)return;
-  if(CI[id])CI[id].destroy();
+  if(CI[id]){try{CI[id].destroy();}catch(e){} CI[id]=null;}
   const ep=opts.extraPlugins||[];
   CI[id]=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
     animation:false,responsive:true,maintainAspectRatio:true,
@@ -463,7 +462,7 @@ function mk(id,type,labels,datasets,opts={}){
     scales:type==='doughnut'||type==='pie'?undefined:{
       x:{grid:{color:'rgba(0,0,0,.04)'},ticks:{maxTicksLimit:12,font:{size:9}},...(opts.xS||{})},
       y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true,...(opts.yS||{})}
-    },...opts
+    }
   }});
 }
 
