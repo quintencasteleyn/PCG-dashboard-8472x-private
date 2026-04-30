@@ -455,7 +455,10 @@ function fmtDate(raw){if(!raw)return'?';if(raw.includes('-')&&raw.length>=10)ret
 let CI={};
 function mk(id,type,labels,datasets,opts={}){
   const el=document.getElementById(id);if(!el)return;
-  if(CI[id])CI[id].destroy();
+  // Destroy via our registry AND Chart.js's internal registry
+  if(CI[id]){try{CI[id].destroy();}catch(e){}}
+  const existing=Chart.getChart(el);
+  if(existing){try{existing.destroy();}catch(e){}}
   const ep=opts.extraPlugins||[];
   CI[id]=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
     animation:false,responsive:true,maintainAspectRatio:true,
