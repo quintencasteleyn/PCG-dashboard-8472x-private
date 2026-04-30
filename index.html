@@ -386,7 +386,7 @@ Chart.register({
     if(chart.canvas.id!=='c-daily-60')return;
     const{ctx,chartArea:{top,bottom},scales:{x}}=chart;
     if(!x)return;
-    const xp=x.getPixelForIndex(30);
+    const xp=x.getPixelForValue(lbl60[30]);
     ctx.save();
     ctx.beginPath();ctx.moveTo(xp,top);ctx.lineTo(xp,bottom);
     ctx.strokeStyle='rgba(220,38,38,.55)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
