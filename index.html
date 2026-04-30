@@ -471,9 +471,13 @@ function fmtDate(raw){if(!raw)return'?';if(raw.includes('-')&&raw.length>=10)ret
 let CI={};
 function mk(id,type,labels,datasets,opts={}){
   const el=document.getElementById(id);if(!el)return;
-  if(CI[id]){try{CI[id].destroy();}catch(e){} CI[id]=null;}
+  // Always destroy whatever is on this canvas before creating new chart
+  if(el._chartjs_instance){
+    try{el._chartjs_instance.destroy();}catch(e){}
+    el._chartjs_instance=null;
+  }
   const ep=opts.extraPlugins||[];
-  CI[id]=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
+  const chart=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
     animation:false,responsive:true,maintainAspectRatio:true,
     plugins:{legend:{labels:{boxWidth:9,padding:8,font:{size:9}}},...(opts.plugins||{})},
     scales:type==='doughnut'||type==='pie'?undefined:{
@@ -481,6 +485,8 @@ function mk(id,type,labels,datasets,opts={}){
       y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true,...(opts.yS||{})}
     }
   }});
+  el._chartjs_instance=chart;
+  CI[id]=chart;
 }
 
 // ── FRESHNESS ────────────────────────────────
