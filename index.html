@@ -739,29 +739,6 @@ function bOv(){
   const r7=roll(7),r30=roll(30),r60=roll(60);
   const labR=orderedDates.map(d=>/^\d{2}\/\d{2}\/\d{4}$/.test(d)?d.slice(0,6)+d.slice(8):d.slice(5));
   mk('c-roll','line',labR,[lDS('7-day',r7,'#6b9ef5','rgba(107,158,245,.10)'),lDS('30-day',r30,'#3db870','rgba(61,184,112,.10)'),lDS('60-day',r60,'#e06b42','rgba(224,107,66,.10)')],{plugins:{legend:{position:'top'}},yS:{beginAtZero:true}});
-  // ── DAILY SALES ±30 DTF around today ────────────────────
-  {
-    const tdtf=minDTF(D26);
-    const dwin=[];
-    for(let d=tdtf+30;d>=tdtf-30;d--) dwin.push(d);
-    const lbl60=dwin.map(d=>'D-'+d);
-    const dat26=dwin.map(d=>d<tdtf?null:(DTF26[d]?Object.values(DTF26[d]).reduce((s,v)=>s+(v.t||0),0):0));
-    const dat25=dwin.map(d=>DTF25[d]?Object.values(DTF25[d]).reduce((s,v)=>s+(v.t||0),0):null);
-    const tplug={id:'todayLine60',afterDraw(chart){
-      const{ctx,chartArea:{top,bottom},scales:{x}}=chart;
-      const xp=x.getPixelForIndex(30);
-      ctx.save();ctx.beginPath();ctx.moveTo(xp,top);ctx.lineTo(xp,bottom);
-      ctx.strokeStyle='rgba(220,38,38,.55)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
-      ctx.stroke();ctx.setLineDash([]);
-      ctx.fillStyle='#dc2626';ctx.font='bold 9px Sora,sans-serif';
-      ctx.textAlign='center';ctx.fillText('TODAY',xp,top-2);
-      ctx.restore();
-    }};
-    mk('c-daily-60','line',lbl60,[
-      lDS('2026',dat26,Y26,Y26b),
-      lDS('2025 (same DTF)',dat25,Y25,Y25b)
-    ],{plugins:{legend:{position:'top'}},yS:{beginAtZero:true},extraPlugins:[tplug]});
-  }
 }
 
 // ── SALES TRENDS ─────────────────────────────
@@ -966,7 +943,31 @@ function ST(n,el){
   document.querySelectorAll('.nt').forEach(t=>t.classList.remove('on'));
   document.getElementById('s-'+n).classList.add('on');el.classList.add('on');
 }
-function buildAll(){bOv();bDetail();bTrends();bRev();bWav();}
+
+function bDaily60(){
+  const tdtf=minDTF(D26);
+  const dwin=[];
+  for(let d=tdtf+30;d>=tdtf-30;d--) dwin.push(d);
+  const lbl60=dwin.map(d=>'D-'+d);
+  const dat26=dwin.map(d=>d<tdtf?null:(DTF26[d]?Object.values(DTF26[d]).reduce((s,v)=>s+(v.t||0),0):0));
+  const dat25=dwin.map(d=>DTF25[d]?Object.values(DTF25[d]).reduce((s,v)=>s+(v.t||0),0):null);
+  const tplug={id:'todayLine60',afterDraw(chart){
+    const{ctx,chartArea:{top,bottom},scales:{x}}=chart;
+    const xp=x.getPixelForIndex(30);
+    ctx.save();ctx.beginPath();ctx.moveTo(xp,top);ctx.lineTo(xp,bottom);
+    ctx.strokeStyle='rgba(220,38,38,.55)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+    ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#dc2626';ctx.font='bold 9px Sora,sans-serif';
+    ctx.textAlign='center';ctx.fillText('TODAY',xp,top-2);
+    ctx.restore();
+  }};
+  mk('c-daily-60','line',lbl60,[
+    lDS('2026',dat26,Y26,Y26b),
+    lDS('2025 (same DTF)',dat25,Y25,Y25b)
+  ],{plugins:{legend:{position:'top'}},yS:{beginAtZero:true},extraPlugins:[tplug]});
+}
+
+function buildAll(){bOv();bDaily60();bDetail();bTrends();bRev();bWav();}
 
 // ── DETAIL TAB ───────────────────────────────
 function bDetail(){
