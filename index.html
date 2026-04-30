@@ -471,13 +471,16 @@ function fmtDate(raw){if(!raw)return'?';if(raw.includes('-')&&raw.length>=10)ret
 let CI={};
 function mk(id,type,labels,datasets,opts={}){
   const el=document.getElementById(id);if(!el)return;
-  // Always destroy whatever is on this canvas before creating new chart
+  // Destroy existing instance if tracked
   if(el._chartjs_instance){
     try{el._chartjs_instance.destroy();}catch(e){}
     el._chartjs_instance=null;
   }
+  // Replace canvas with a fresh clone to clear ALL Chart.js internal state
+  const fresh=el.cloneNode(false);
+  el.parentNode.replaceChild(fresh,el);
   const ep=opts.extraPlugins||[];
-  const chart=new Chart(el,{type,data:{labels,datasets},plugins:ep,options:{
+  const chart=new Chart(fresh,{type,data:{labels,datasets},plugins:ep,options:{
     animation:false,responsive:true,maintainAspectRatio:true,
     plugins:{legend:{labels:{boxWidth:9,padding:8,font:{size:9}}},...(opts.plugins||{})},
     scales:type==='doughnut'||type==='pie'?undefined:{
@@ -485,7 +488,7 @@ function mk(id,type,labels,datasets,opts={}){
       y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true,...(opts.yS||{})}
     }
   }});
-  el._chartjs_instance=chart;
+  fresh._chartjs_instance=chart;
   CI[id]=chart;
 }
 
