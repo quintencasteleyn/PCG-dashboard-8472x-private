@@ -485,11 +485,82 @@ function bDaily60(){
               y:{grid:{color:'rgba(0,0,0,.04)'},beginAtZero:true}}}});
   }
 }
+function bTrends(){
+  const dtfs=DTFS(370),lbl=dtfs.map(d=>'D-'+d);
+  mk('c-cum-all','line',lbl,[
+    lDS('2026',nE26(cs(tA(DTF26,dtfs,ENTRY_TYPES)),dtfs),Y26,Y26b),
+    lDS('2025',nE(cs(tA(DTF25,dtfs,ENTRY_TYPES))),Y25,Y25b),
+    lDS('2024',nE(cs(tA(DTF24,dtfs,ENTRY_TYPES))),Y24,Y24b),
+    lDS('2023',nE(cs(tA(DTF23,dtfs,ENTRY_TYPES))),Y23,Y23b),
+  ],{plugins:{legend:{position:'top'}}});
+  [['fri','Friday'],['sat','Saturday'],['sun','Sunday'],['combi','Combi']].forEach(([s,k])=>{
+    mk('c-cum-'+s,'line',lbl,[
+      lDS('2026',nE26(cs(dA(DTF26,k,dtfs)),dtfs),Y26,Y26b),
+      lDS('2025',nE(cs(dA(DTF25,k,dtfs))),Y25,Y25b),
+      lDS('2024',nE(cs(dA(DTF24,k,dtfs))),Y24,Y24b),
+      lDS('2023',nE(cs(dA(DTF23,k,dtfs))),Y23,Y23b),
+    ],{plugins:{legend:{position:'top'}}});
+  });
+  const ctrMap={};D26.forEach(r=>{if(r.country&&ENTRY_TYPES.includes(r.title)){if(!ctrMap[r.country])ctrMap[r.country]=0;ctrMap[r.country]+=r.tickets;}});
+  const ctrE=Object.entries(ctrMap).sort((a,b)=>b[1]-a[1]).slice(0,10);const tot=Object.values(ctrMap).reduce((s,v)=>s+v,0);
+  mk('c-country','bar',ctrE.map(e=>e[0]+' '+((e[1]/tot*100).toFixed(1))+'%'),[{data:ctrE.map(e=>e[1]),backgroundColor:['#6b9ef5','#3db870','#e06b42','#f5c842','#c4b5fd','#93c5fd','#86efac','#fbb26a','#0891b2','#d97706']}],{indexAxis:'y',plugins:{legend:{display:false}}});
+}
+
+function bRev(){
+  const tt26=ENTRY_TYPES.reduce((s,k)=>s+(T26[k]?.t||0),0);
+  const gr26=ENTRY_TYPES.reduce((s,k)=>s+(T26[k]?.r||0),0);const nt26=netRev(gr26,tt26);
+  const tt25f=ENTRY_TYPES.reduce((s,k)=>s+(T25[k]?.t||0),0);
+  const gr25f=ENTRY_TYPES.reduce((s,k)=>s+(T25[k]?.r||0),0);const nt25f=netRev25(gr25f,tt25f);
+  const minD=minDTF(D26);let gr25w=0,tt25w=0;
+  D25.forEach(r=>{if(r.dtf>=minD&&ENTRY_TYPES.includes(r.title)){gr25w+=(r.price||0);tt25w+=(r.tickets||0);}});
+  const nt25w=netRev25(gr25w,tt25w);
+  document.getElementById('krow-rev').innerHTML=[
+    {l:'Net revenue 2026',v:'€'+N(Math.round(nt26)),s:'gross €'+N(Math.round(gr26)),c:Y26},
+    {l:'Net 2025 @same',v:'€'+N(Math.round(nt25w)),s:dStr(nt26,nt25w),c:Y25},
+    {l:'Net 2025 full',v:'€'+N(Math.round(nt25f)),s:pO(nt26,nt25f)+' reached',c:Y25}
+  ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="klbl">${k.l}</div><div class="kval">${k.v}</div><div class="ksub">${k.s}</div></div>`).join('');
+  const dtfs=DTFS(370),lbl=dtfs.map(d=>'D-'+d);
+  function nc(dtfO,types,isOld){let s=0;return dtfs.map(d=>{if(!dtfO[d])return s;const g=types.reduce((a,k)=>a+(dtfO[d][k]?.r||0),0);const t=types.reduce((a,k)=>a+(dtfO[d][k]?.t||0),0);s+=isOld?netRev25(g,t):netRev(g,t);return s;});}
+  mk('c-rev-all','line',lbl,[lDS('2026',nE26(nc(DTF26,ENTRY_TYPES,false),dtfs),Y26,Y26b),lDS('2025',nE(nc(DTF25,ENTRY_TYPES,true)),Y25,Y25b)],{plugins:{legend:{position:'top'}},yS:{ticks:{callback:v=>'€'+(v/1000).toFixed(0)+'k'}}});
+  const rd26=dtfs.map(d=>DTF26[d]?ENTRY_TYPES.reduce((s,k)=>s+(DTF26[d][k]?.r||0),0):0);
+  const rd25=dtfs.map(d=>DTF25[d]?ENTRY_TYPES.reduce((s,k)=>s+(DTF25[d][k]?.r||0),0):0);
+  mk('c-rev-day','bar',lbl,[{label:'2026',data:nE26(rd26,dtfs),backgroundColor:'rgba(217,119,6,.65)',stack:'a'},{label:'2025',data:nE(rd25),backgroundColor:'rgba(37,99,235,.4)',stack:'b'}],{plugins:{legend:{position:'top'}},yS:{ticks:{callback:v=>'€'+(v/1000).toFixed(0)+'k'}}});
+  [['fri','Friday'],['sat','Saturday'],['sun','Sunday'],['combi','Combi']].forEach(([s,k])=>{
+    mk('c-rev-'+s,'line',lbl,[lDS('2026',nE26(nc(DTF26,[k],false),dtfs),Y26,Y26b),lDS('2025',nE(nc(DTF25,[k],true)),Y25,Y25b)],{plugins:{legend:{position:'top'}},yS:{ticks:{callback:v=>'€'+(v/1000).toFixed(0)+'k'}}});
+  });
+  const tblR=ENTRY_TYPES.map(k=>{const{t:t2=0,r:g2=0}=T26[k]||{};const n2=netRev(g2,t2);const p25=T25[k]||{};const n25f=netRev25(p25.r||0,p25.t||0);return`<tr><td>${k}</td><td class="t26">€${N(Math.round(g2))}</td><td>€${N(Math.round(g2*0.02))}</td><td>€${N(Math.round(g2*0.06))}</td><td class="t26">€${N(Math.round(n2))}</td></tr>`;}).join('');
+  document.getElementById('tbl-rev').innerHTML=`<thead><tr><th>Type</th><th>Gross</th><th>Fees</th><th>VAT</th><th>Net 2026</th></tr></thead><tbody>${tblR}</tbody>`;
+}
+
+function bWav(){
+  const ROWS=ENTRY_TYPES.map(k=>({l:k,k,c:DC[k]||'#888'}));
+  const caps=ROWS.map(r=>DCAP[r.k]||0);
+  const tots=ROWS.map(r=>T26[r.k]?.t||0);
+  const waveTbl=ROWS.map((r,i)=>{const t=tots[i];const cap=caps[i];const wave=CW(r.k);const ws=wave?waveSold(r.k,wave):0;const idx=WAVE_ORDER.indexOf(wave);const past=WAVE_ORDER.slice(0,idx).reduce((s,w)=>s+waveSold(r.k,w),0);const wq=wave&&WAVE_CFG[r.k]?WAVE_CFG[r.k][wave]||0:0;return`<tr><td><span class="dot" style="background:${r.c}"></span>${r.l}</td><td>${wave?`<span class="badge" style="color:${Y26};border-color:${Y26}">${wave}</span>`:'—'}</td><td class="t26">${ws?N(ws):'—'}</td><td>${wq?N(wq):'—'}</td><td>${ws&&wq?bar(ws/wq*100,Y26):'—'}</td><td>${past?N(past):'—'}</td><td class="t26">${N(t)}</td><td>${cap?N(cap):'—'}</td><td>${cap?bar(t/cap*100,'#15803d'):'—'}</td></tr>`;}).join('');
+  document.getElementById('tbl-wav').innerHTML=`<thead><tr><th>Type</th><th>Wave</th><th class="t26">Sold</th><th>Quota</th><th>% quota</th><th>Past</th><th class="t26">Total</th><th>Capacity</th><th>% cap</th></tr></thead><tbody>${waveTbl}</tbody>`;
+  const unsolds=ROWS.map((r,i)=>Math.max(0,caps[i]-tots[i]));
+  const curWaves=ROWS.map(r=>{const w=CW(r.k);return w?waveSold(r.k,w):0;});
+  const pastWaves=ROWS.map(r=>{const cur=CW(r.k);const idx=WAVE_ORDER.indexOf(cur);return WAVE_ORDER.slice(0,idx).reduce((s,w)=>s+waveSold(r.k,w),0);});
+  mk('c-wb','bar',ROWS.map(r=>r.l),[{label:'Past waves',data:pastWaves,backgroundColor:'#86efac',stack:'s'},{label:'Current wave',data:curWaves,backgroundColor:'#fed7aa',stack:'s'},{label:'Unsold',data:unsolds,backgroundColor:'#e2ddd8',stack:'s'}],{scales:{x:{stacked:true},y:{stacked:true}},plugins:{legend:{position:'top'}}});
+  mk('c-wf','bar',ROWS.map(r=>r.l),[{label:'% cap',data:ROWS.map((r,i)=>caps[i]?Math.round(tots[i]/caps[i]*100):0),backgroundColor:ROWS.map(r=>DC[r.k]||'#888')}],{plugins:{legend:{display:false}},yS:{max:100,ticks:{callback:v=>v+'%'}}});
+}
+
+function bDetail(){
+  const minD=minDTF(D26);
+  const t25wMap={};D25.forEach(r=>{if(r.dtf>=minD&&ENTRY_TYPES.includes(r.title)){if(!t25wMap[r.title])t25wMap[r.title]=0;t25wMap[r.title]+=r.tickets||0;}});
+  const ROWS=ENTRY_TYPES.map(k=>({l:k,k,c:DC[k]||'#888'}));
+  document.getElementById('tbl-det-tickets').innerHTML=`<thead><tr><th>Type</th><th class="t26">2026</th><th class="t25">2025 @D-${minD}</th><th>Δ</th><th class="t25">2025 Final</th><th>vs Final</th></tr></thead><tbody>`+ROWS.map(r=>{const t26=T26[r.k]?.t||0;const t25w=t25wMap[r.k]||0;const f25=T25[r.k]?.t||0;return`<tr><td><span class="dot" style="background:${r.c}"></span>${r.l}</td><td class="t26">${N(t26)}</td><td class="t25">${N(t25w)}</td><td class="${dCl(t26,t25w)}">${dStr(t26,t25w)}</td><td class="t25">${f25?N(f25):'—'}</td><td>${f25?pO(t26,f25):'—'}</td></tr>`;}).join('')+'</tbody>';
+  document.getElementById('tbl-det-cap').innerHTML=`<thead><tr><th>Type</th><th>Capacity</th><th class="t26">Sold</th><th>% filled</th><th>Left</th></tr></thead><tbody>`+ROWS.filter(r=>DCAP[r.k]).map(r=>{const t=T26[r.k]?.t||0;const c=DCAP[r.k];return`<tr><td><span class="dot" style="background:${r.c}"></span>${r.l}</td><td>${N(c)}</td><td class="t26">${N(t)}</td><td>${bar(t/c*100,'#15803d')}</td><td>${N(c-t)}</td></tr>`;}).join('')+'</tbody>';
+  const combiT=T26['Combi']?.t||0;
+  document.getElementById('tbl-det-att').innerHTML=`<thead><tr><th>Day</th><th class="t26">Att. est. 2026</th></tr></thead><tbody>`+['Friday','Saturday','Sunday'].map(d=>{const t26=T26[d]?.t||0;const att=Math.round((t26+combiT+(GUESTS[d]||0))*(1-NO_SHOW));return`<tr><td>${d}</td><td class="t26">${N(att)}</td></tr>`;}).join('')+'</tbody>';
+}
+
 function buildAll(){bOv();bDaily60();bTrends();bRev();bWav();bDetail();}
 async function init(){
   loadData(E26,E25,E24,E23);setFresh();
-  if(API){try{const resp=await fetch(API+'?t='+Date.now(),{method:'GET',mode:'cors'});if(resp.ok){const j=await resp.json();if(!j.error&&j.data){await liveRefresh();return;}}}catch(e){console.log('Init failed:',e.message);}}
   buildAll();
+  buildAll(); // always build with embedded data first
+  if(API){try{const resp=await fetch(API+'?t='+Date.now(),{method:'GET',mode:'cors'});if(resp.ok){const j=await resp.json();if(!j.error&&j.data){await liveRefresh();}}}catch(e){console.log('Init failed:',e.message);}}
 }
 init();
 </script>
