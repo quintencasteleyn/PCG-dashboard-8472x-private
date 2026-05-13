@@ -335,11 +335,11 @@ const E25=[{"date": "06/06/2025", "dtf": 0, "pos": "TicketSwap", "title": "Satur
 const API='https://script.google.com/macros/s/AKfycby_-Y5w3AC6sV-nPRsOmNgZ-rTQk8RBKlexG5iWnVa6ZjKVu0cUuNPEYyYRP5VXcI6WZA/exec';
 
 // ── CONFIG ──────────────────────────────────
-let DCAP={Saturday:2800,Sunday:2500,Monday:2550};
+let DCAP={Saturday:3050,Sunday:3050,Monday:3050};
 let DGUESTS25={Saturday:407,Sunday:503,Monday:645,Combi:200};
 let GUESTS={'Saturday':500,'Sunday':500,'Monday (Public holiday)':500,'Combi (Saturday, Sunday, Monday)':200};
 let TYPE_CAP={
-  'Saturday':2800,'Sunday':2500,'Monday (Public holiday)':2550,
+  'Saturday':3050,'Sunday':3050,'Monday (Public holiday)':3050,
   'Combi (Saturday, Sunday, Monday)':690
 };
 let WAVE_CFG={
@@ -427,10 +427,10 @@ function waveSoldFor(k,wave){return D26.filter(x=>tKey(x)===k&&x.subtitle===wave
 function applyApiConfig(j){
   if(j.capacity){
     DCAP={Saturday:j.capacity.Saturday||DCAP.Saturday,Sunday:j.capacity.Sunday||DCAP.Sunday,Monday:j.capacity.Monday||DCAP.Monday};
-    // Also update TYPE_CAP so capFor() and the capacity column both reflect live values
     if(j.capacity.Saturday) TYPE_CAP['Saturday']=j.capacity.Saturday;
     if(j.capacity.Sunday)   TYPE_CAP['Sunday']=j.capacity.Sunday;
     if(j.capacity.Monday)   TYPE_CAP['Monday (Public holiday)']=j.capacity.Monday;
+    if(j.capacity.Combi)    TYPE_CAP['Combi (Saturday, Sunday, Monday)']=j.capacity.Combi;
   }
   if(j.guests25){DGUESTS25={Saturday:j.guests25.Saturday||DGUESTS25.Saturday,Sunday:j.guests25.Sunday||DGUESTS25.Sunday,Monday:j.guests25.Monday||DGUESTS25.Monday,Combi:j.guests25.Combi||DGUESTS25.Combi};}
   if(j.guests26){GUESTS={'Saturday':j.guests26.Saturday||GUESTS['Saturday'],'Sunday':j.guests26.Sunday||GUESTS['Sunday'],'Monday (Public holiday)':j.guests26.Monday||GUESTS['Monday (Public holiday)'],'Combi (Saturday, Sunday, Monday)':j.guests26.Combi||GUESTS['Combi (Saturday, Sunday, Monday)']};}
