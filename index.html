@@ -613,14 +613,28 @@ function bOv(){
     <td style="background:var(--c-wave)">${combiWs&&combiWq?bar(combiWs/combiWq*100,Y26):'—'}</td>
   </tr>`;
 
+  // Sat-Mon total (excl. Friday and Friday-CERA)
+  const fri26=(T26['Friday']?.t||0)+(T26['Friday - CERA']?.t||0);
+  const fri25w=(t25w['Friday']||0)+(t25w['Friday - CERA']||0);
+  const fri25f=(F25['Friday']||0)+(F25['Friday - CERA']||0);
+  const tt26_satmon=tt26-fri26;
+  const tt25w_satmon=tt25w-fri25w;
+  const tt25f_satmon=tt25f-fri25f;
   rows+=`<tr class="tot-row">
-    <td>Total (all incl. combi)</td>
+    <td>Total (Sat–Mon)</td>
+    <td class="t26">${N(tt26_satmon)}</td><td class="t25">${N(tt25w_satmon)}</td>
+    <td class="${dCl(tt26_satmon,tt25w_satmon)}">${dStr(tt26_satmon,tt25w_satmon)}</td>
+    <td class="t25">${N(tt25f_satmon)}</td><td>${pO(tt26_satmon,tt25f_satmon)}</td>
+    <td>${N(totCap)}</td><td>${bar(tt26_satmon/totCap*100,'#15803d')}</td><td>${N(totCap-tt26_satmon)}</td>
+    <td>—</td><td>—</td><td>—</td><td>—</td>
+  </tr>`;
+  rows+=`<tr class="tot-row" style="border-top:2px solid var(--bd)">
+    <td>Total (Fri–Mon)</td>
     <td class="t26">${N(tt26)}</td><td class="t25">${N(tt25w)}</td>
     <td class="${dCl(tt26,tt25w)}">${dStr(tt26,tt25w)}</td>
     <td class="t25">${N(tt25f)}</td><td>${pO(tt26,tt25f)}</td>
-    <td>${N(totCap)}</td><td>${bar(tt26/totCap*100,'#15803d')}</td><td>${N(totCap-tt26)}</td>
+    <td>—</td><td>—</td><td>—</td>
     <td>—</td><td>—</td><td>—</td><td>—</td>
-
   </tr>`;
 
   rows+='</tbody>';
