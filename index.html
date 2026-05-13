@@ -108,17 +108,12 @@ tbody tr:hover td{filter:brightness(.97);}
 
 .guest-entry{background:#fafaf9;border:1px solid #e2ddd8;border-radius:8px;margin-top:10px;padding:14px 18px;}
 .guest-entry h4{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#78716c;margin-bottom:10px;}
-.guest-tbl{width:100%;border-collapse:collapse;margin-bottom:10px;}
-.guest-tbl th{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--mu);padding:5px 8px;text-align:right;border-bottom:1px solid var(--bd);background:var(--sf2);}
-.guest-tbl th:first-child{text-align:left;}
-.guest-tbl td{padding:5px 8px;border-bottom:1px solid rgba(226,221,216,.5);font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right;}
-.guest-tbl td:first-child{text-align:left;font-size:11px;color:#44403c;}
-.guest-tbl input{width:80px;padding:4px 7px;border:1px solid #e2ddd8;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;color:#1c1917;text-align:right;}
-.guest-tbl input:focus{outline:none;border-color:#d97706;}
+.guest-row{display:flex;align-items:center;gap:12px;margin-bottom:7px;}
+.guest-row label{font-size:11px;font-family:'JetBrains Mono',monospace;color:#44403c;width:180px;}
+.guest-row input{width:90px;padding:5px 8px;border:1px solid #e2ddd8;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;color:#1c1917;text-align:right;}
+.guest-row input:focus{outline:none;border-color:#d97706;}
 .guest-save-btn{padding:5px 14px;background:#d97706;color:#fff;border:none;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;cursor:pointer;}
 .guest-save-ok{font-size:10px;color:#15803d;margin-left:8px;}
-.gl-pct-good{color:#15803d;font-weight:600;}
-.gl-pct-warn{color:#b45309;font-weight:600;}
 </style>
 </head>
 <body>
@@ -200,44 +195,24 @@ tbody tr:hover td{filter:brightness(.97);}
     <div class="th">Status at a glance — all ticket types vs 2025, capacity &amp; attendance</div>
     <table id="tbl-master"></table>
     <div class="note">* Capacity from JM26 capacities. Paid = day+CERA+Combi. No-show 6%.</div>
-    <div class="tw" style="margin-top:12px;margin-bottom:0;border-radius:6px;overflow:hidden">
-      <div class="th" style="background:rgba(109,40,217,.08);color:#5b21b6;font-size:10px;padding:7px 13px">Attendance estimate 2026 — per day</div>
-      <table id="tbl-att-standalone" style="width:100%"></table>
+    <div class="tw" style="margin-top:12px;border-radius:6px;overflow:hidden">
+      <div class="th" style="background:rgba(109,40,217,.08);color:#5b21b6;font-size:10px;padding:7px 13px">Attendance estimate — per day</div>
+      <table id="tbl-att-standalone" style="width:100%;border-collapse:collapse"></table>
     </div>
     <div class="guest-entry">
-      <h4>✏️ Guest counts — estimate vs actual guestlist</h4>
-      <table class="guest-tbl">
+      <h4>✏️ Guest counts</h4>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:10px">
         <thead><tr>
-          <th>Day</th>
-          <th>Estimate<br><span style="font-weight:400;text-transform:none;letter-spacing:0;color:#a8a29e">(your input)</span></th>
-          <th>Actual<br>guestlist</th>
-          <th>% of<br>estimate</th>
+          <th style="text-align:left;padding:5px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--mu);border-bottom:1px solid var(--bd);background:var(--sf2)">Day</th>
+          <th style="text-align:right;padding:5px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--mu);border-bottom:1px solid var(--bd);background:var(--sf2)">Estimate</th>
+          <th style="text-align:right;padding:5px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--mu);border-bottom:1px solid var(--bd);background:var(--sf2)">Actual guestlist</th>
+          <th style="text-align:right;padding:5px 8px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--mu);border-bottom:1px solid var(--bd);background:var(--sf2)">% of estimate</th>
         </tr></thead>
         <tbody>
-          <tr>
-            <td><span class="dot" style="background:#6b9ef5"></span>Saturday</td>
-            <td><input type="number" id="g-sat" min="0" value="500"></td>
-            <td id="gl-act-sat" class="t26">—</td>
-            <td id="gl-pct-sat">—</td>
-          </tr>
-          <tr>
-            <td><span class="dot" style="background:#3db870"></span>Sunday</td>
-            <td><input type="number" id="g-sun" min="0" value="500"></td>
-            <td id="gl-act-sun" class="t26">—</td>
-            <td id="gl-pct-sun">—</td>
-          </tr>
-          <tr>
-            <td><span class="dot" style="background:#e06b42"></span>Monday</td>
-            <td><input type="number" id="g-mon" min="0" value="500"></td>
-            <td id="gl-act-mon" class="t26">—</td>
-            <td id="gl-pct-mon">—</td>
-          </tr>
-          <tr>
-            <td><span class="dot" style="background:#f5c842"></span>Combi</td>
-            <td><input type="number" id="g-combi" min="0" value="200"></td>
-            <td id="gl-act-combi" class="t26">—</td>
-            <td id="gl-pct-combi">—</td>
-          </tr>
+          <tr><td style="padding:5px 8px;font-size:11px"><span class="dot" style="background:#6b9ef5"></span>Saturday</td><td style="padding:5px 8px;text-align:right"><input type="number" id="g-sat" min="0" value="500" style="width:80px;padding:4px 6px;border:1px solid var(--bd);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right"></td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" class="t26" id="gl-act-sat">—</td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" id="gl-pct-sat">—</td></tr>
+          <tr><td style="padding:5px 8px;font-size:11px"><span class="dot" style="background:#3db870"></span>Sunday</td><td style="padding:5px 8px;text-align:right"><input type="number" id="g-sun" min="0" value="500" style="width:80px;padding:4px 6px;border:1px solid var(--bd);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right"></td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" class="t26" id="gl-act-sun">—</td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" id="gl-pct-sun">—</td></tr>
+          <tr><td style="padding:5px 8px;font-size:11px"><span class="dot" style="background:#e06b42"></span>Monday</td><td style="padding:5px 8px;text-align:right"><input type="number" id="g-mon" min="0" value="500" style="width:80px;padding:4px 6px;border:1px solid var(--bd);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right"></td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" class="t26" id="gl-act-mon">—</td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" id="gl-pct-mon">—</td></tr>
+          <tr><td style="padding:5px 8px;font-size:11px"><span class="dot" style="background:#f5c842"></span>Combi</td><td style="padding:5px 8px;text-align:right"><input type="number" id="g-combi" min="0" value="200" style="width:80px;padding:4px 6px;border:1px solid var(--bd);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;text-align:right"></td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" class="t26" id="gl-act-combi">—</td><td style="padding:5px 8px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px" id="gl-pct-combi">—</td></tr>
         </tbody>
       </table>
       <div style="display:flex;align-items:center;gap:10px;margin-top:4px">
@@ -375,7 +350,6 @@ const WAVE_ORDER=['Presale','Early Bird','Regular','Final Wave','Cera - Early Bi
 const NO_SHOW=0.06;
 const ATT25={'Saturday':2550,'Sunday':2510,'Monday (Public holiday)':2755};
 const F25={'Saturday':1272,'Sunday':1164,'Monday (Public holiday)':1270,
-  'Friday':476,'Friday - CERA':79,
   'Combi (Friday, Saturday, Sunday, Monday)':440,'Saturday - CERA':356,
   'Sunday - CERA':253,'Monday (Public holiday) - CERA':200};
 
@@ -474,53 +448,43 @@ function setFresh(){
 
 // ── OVERVIEW ─────────────────────────────────
 function updateGuestActuals(){
-  const GL_KEYS={
+  const glKeys={
     sat:'Guest - Saturday',
     sun:'Guest - Sunday',
     mon:'Guest - Monday (Public holiday)',
     combi:'Guest - Combi (Saturday, Sunday, Monday)'
   };
   const actuals={};
-  D26.forEach(r=>{
-    const k=r.title;
-    if(k&&k.startsWith('Guest - ')){actuals[k]=(actuals[k]||0)+r.tickets;}
-  });
+  D26.forEach(r=>{const k=r.title;if(k&&k.startsWith('Guest - '))actuals[k]=(actuals[k]||0)+r.tickets;});
   ['sat','sun','mon','combi'].forEach(id=>{
-    const key=GL_KEYS[id];
-    const act=actuals[key]||0;
+    const act=actuals[glKeys[id]]||0;
     const est=parseInt(document.getElementById('g-'+id)?.value)||0;
     const actEl=document.getElementById('gl-act-'+id);
     const pctEl=document.getElementById('gl-pct-'+id);
-    if(actEl) actEl.textContent=act>0?act.toLocaleString('nl-BE'):'0';
+    if(actEl)actEl.textContent=N(act);
     if(pctEl){
       if(est>0){
         const pct=(act/est*100).toFixed(1);
-        pctEl.textContent=pct+'%';
-        pctEl.className=act>=est?'gl-pct-good':'gl-pct-warn';
-      } else {
-        pctEl.textContent='—';
-        pctEl.className='';
-      }
+        const col=act>=est?'#15803d':'#b45309';
+        pctEl.innerHTML='<span style="color:'+col+';font-weight:600">'+pct+'%</span>';
+      }else{pctEl.textContent='—';}
     }
   });
 }
 
 function bOv(){
-  // Keys shown as rows in the table (excl. guestlist)
-  const SHOWN_KEYS=['Saturday','Sunday','Monday (Public holiday)','Combi (Saturday, Sunday, Monday)',
-    'Friday','Saturday - CERA','Sunday - CERA','Monday (Public holiday) - CERA','Friday - CERA'];
-  const tt26=SHOWN_KEYS.reduce((s,k)=>s+(T26[k]?.t||0),0);
+  const tt26=Object.values(T26).reduce((s,v)=>s+v.t,0);
   const gr26=Object.values(T26).reduce((s,v)=>s+v.r,0);
   const nt26=netRev(gr26,tt26,2026);
   const minD=minDTF(D26);
-  let t25w={};D25.forEach(r=>{if(r.dtf>=minD&&r.pos!=='Guestlist'){const k=tKey(r);if(!t25w[k])t25w[k]=0;t25w[k]+=r.tickets;}});
-  const tt25w=SHOWN_KEYS.reduce((s,k)=>s+(t25w[k]||0),0);
-  const tt25f=SHOWN_KEYS.reduce((s,k)=>s+(F25[k]||0),0);
+  let t25w={};D25.forEach(r=>{if(r.dtf>=minD){const k=tKey(r);if(!t25w[k])t25w[k]=0;t25w[k]+=r.tickets;}});
+  const tt25w=Object.values(t25w).reduce((s,v)=>s+v,0);
+  const tt25f=Object.values(F25).reduce((s,v)=>s+v,0);
 
   document.getElementById('krow-ov').innerHTML=[
-    {l:'Total tickets — 2026',v:N(tt26),s:'excl. guestlist tickets',c:Y26},
-    {l:'2025 same period',v:N(tt25w),s:dStr(tt26,tt25w)+' vs 2026 · excl. guestlist',c:Y25},
-    {l:'2025 full season',v:N(tt25f),s:pO(tt26,tt25f)+' reached · excl. guestlist',c:Y25},
+    {l:'Total tickets — 2026',v:N(tt26),s:'all types combined',c:Y26},
+    {l:'2025 same period',v:N(tt25w),s:dStr(tt26,tt25w)+' vs 2026',c:Y25},
+    {l:'2025 full season',v:N(tt25f),s:pO(tt26,tt25f)+' reached',c:Y25},
     {l:'Net revenue — 2026',v:EU(nt26),s:'after fees & VAT',c:Y26},
     {l:'Guest tickets total',v:N((GUESTS['Saturday']||0)+(GUESTS['Sunday']||0)+(GUESTS['Monday (Public holiday)']||0)+(GUESTS['Combi (Saturday, Sunday, Monday)']||0)),s:`${GUESTS['Saturday']||0} day + ${GUESTS['Combi (Saturday, Sunday, Monday)']||0} combi guests`,c:'#6d28d9'},
   ].map(k=>`<div class="kpi" style="--kc:${k.c}"><div class="klbl">${k.l}</div><div class="kval">${k.v}</div><div class="ksub">${k.s}</div></div>`).join('');
@@ -538,17 +502,15 @@ function bOv(){
   ];
   const combiKey='Combi (Saturday, Sunday, Monday)';
   const combi25Key='Combi (Friday, Saturday, Sunday, Monday)';
-  const FRI25_TOTAL=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday'&&r.pos!=='CERA SHOP')s+=r.tickets;});return s;})();
-  const FRI25_SAME=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday'&&r.pos!=='CERA SHOP'&&r.dtf>=minD)s+=r.tickets;});return s;})();
-  const FRICERA25_TOTAL=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday'&&r.pos==='CERA SHOP')s+=r.tickets;});return s;})();
-  const FRICERA25_SAME=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday'&&r.pos==='CERA SHOP'&&r.dtf>=minD)s+=r.tickets;});return s;})();
+  const FRI25_TOTAL=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday')s+=r.tickets;});return s;})();
+  const FRI25_SAME=(()=>{let s=0;D25.forEach(r=>{if(r.title==='Friday'&&r.dtf>=minD)s+=r.tickets;});return s;})();
 
   let rows = `<thead><tr>
     <th>Day</th>
     <th class="t26">2026 now</th><th class="t25">2025 @D-${minD}</th><th>Δ</th><th class="t25">2025 Final</th><th>vs Final</th>
     <th>Capacity</th><th>% filled</th><th>Left</th>
     <th>Wave</th><th class="t26">Sold</th><th>Quota</th><th>% quota</th>
-
+    
   </tr></thead><tbody>`;
 
   let totCap=0,totAtt26=0,totAtt25=0;
@@ -610,7 +572,8 @@ function bOv(){
       <td class="t26" style="background:var(--c-wave)">${wsC?N(wsC):'—'}</td>
       <td style="background:var(--c-wave)">${wqC?N(wqC):'—'}</td>
       <td style="background:var(--c-wave)">${wsC&&wqC?bar(wsC/wqC*100,Y26):'—'}</td>
-;
+      
+    </tr>`;
   });
 
   rows+=`<tr class="blk-tickets" style="opacity:.75;font-style:italic">
@@ -622,7 +585,7 @@ function bOv(){
     <td style="color:var(--mu)">—</td>
     <td style="background:var(--c-cap)" colspan="3">—</td>
     <td style="background:var(--c-wave)" colspan="4">—</td>
-;
+  </tr>`;
 
   const combiT=(T26[combiKey]||{t:0}).t;
   const combiT25=t25w[combi25Key]||0;
@@ -643,7 +606,7 @@ function bOv(){
     <td class="t26" style="background:var(--c-wave)">${combiWs?N(combiWs):'—'}</td>
     <td style="background:var(--c-wave)">${combiWq?N(combiWq):'—'}</td>
     <td style="background:var(--c-wave)">${combiWs&&combiWq?bar(combiWs/combiWq*100,Y26):'—'}</td>
-;
+  </tr>`;
 
   rows+=`<tr class="tot-row">
     <td>Total (all incl. combi)</td>
@@ -652,44 +615,38 @@ function bOv(){
     <td class="t25">${N(tt25f)}</td><td>${pO(tt26,tt25f)}</td>
     <td>${N(totCap)}</td><td>${bar(tt26/totCap*100,'#15803d')}</td><td>${N(totCap-tt26)}</td>
     <td>—</td><td>—</td><td>—</td><td>—</td>
-    
+
   </tr>`;
 
   rows+='</tbody>';
   document.getElementById('tbl-master').innerHTML=rows;
 
-  // Standalone attendance table (Sat/Sun/Mon only)
-  const attStandaloneRows=DAYS.map(d=>{
-    const t26d=(T26[d.k]||{t:0}).t;
-    const ceraD=(T26[d.k+' - CERA']||{t:0}).t;
-    const combiD=(T26[combiKey]||{t:0}).t;
-    const gDay=GUESTS[d.k]||500;
-    const gCombi=GUESTS[combiKey]||200;
-    const paid=t26d+ceraD+combiD;
-    const guests=gDay+gCombi;
-    const ns=Math.round((paid+guests)*NO_SHOW);
-    const attEst=(paid+guests)-ns;
-    const a25=ATT25[d.k]||0;
-    return`<tr>
-      <td><span class="dot" style="background:${d.c}"></span><strong>${d.l}</strong></td>
-      <td class="t26" style="background:var(--c-att)">${N(paid)}</td>
-      <td style="background:var(--c-att)">${N(guests)}</td>
-      <td style="background:var(--c-att);color:var(--neg)">−${N(ns)}</td>
-      <td class="t26" style="background:var(--c-att);font-weight:700">${N(attEst)}</td>
-      <td class="t25" style="background:var(--c-att)">${a25?N(a25):'—'}</td>
-      <td style="background:var(--c-att)">${a25?attBar(attEst,a25):'—'}</td>
-    </tr>`;
-  }).join('');
-  const attEl=document.getElementById('tbl-att-standalone');
-  if(attEl) attEl.innerHTML=`<thead><tr style="background:rgba(109,40,217,.06)">
-    <th style="text-align:left;padding:6px 10px;font-size:10px;color:#5b21b6;font-family:'JetBrains Mono',monospace">Day</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:#5b21b6;font-family:'JetBrains Mono',monospace;white-space:normal;min-width:52px">Paid<br>tickets</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:#5b21b6;font-family:'JetBrains Mono',monospace;white-space:normal;min-width:52px">Guest<br>tickets</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:#5b21b6;font-family:'JetBrains Mono',monospace;white-space:normal;min-width:52px">No-show<br>(6%)</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:#5b21b6;font-family:'JetBrains Mono',monospace;white-space:normal;min-width:60px;font-weight:700">Att. est.<br>2026</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:var(--y25);font-family:'JetBrains Mono',monospace;white-space:normal;min-width:56px">Att. 2025<br>Final</th>
-    <th style="background:var(--c-att);padding:6px 10px;font-size:10px;color:var(--mu);font-family:'JetBrains Mono',monospace;white-space:normal;min-width:48px">Δ</th>
-  </tr></thead><tbody>${attStandaloneRows}</tbody>`;
+  // Standalone attendance table
+  const _attEl=document.getElementById('tbl-att-standalone');
+  if(_attEl){
+    const _rows=DAYS.map(d=>{
+      const _t26d=(T26[d.k]||{t:0}).t;
+      const _cera=(T26[d.k+' - CERA']||{t:0}).t;
+      const _combi=(T26[combiKey]||{t:0}).t;
+      const _gDay=GUESTS[d.k]||500;
+      const _gCombi=GUESTS[combiKey]||200;
+      const _paid=_t26d+_cera+_combi;
+      const _guests=_gDay+_gCombi;
+      const _ns=Math.round((_paid+_guests)*NO_SHOW);
+      const _att=(_paid+_guests)-_ns;
+      const _a25=ATT25[d.k]||0;
+      return`<tr>
+        <td style='padding:5px 10px;font-size:12px;font-weight:500'><span class='dot' style='background:${d.c}'></span>${d.l}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;background:var(--c-att)'>${N(_paid)}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;background:var(--c-att)'>${N(_guests)}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;background:var(--c-att);color:var(--neg)'>−${N(_ns)}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;font-weight:700;background:var(--c-att);color:#5b21b6'>${N(_att)}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;background:var(--c-att);color:var(--y25)'>${_a25?N(_a25):'—'}</td>
+        <td style='padding:5px 10px;text-align:right;font-family:JetBrains Mono,monospace;font-size:11px;background:var(--c-att)'>${_a25?attBar(_att,_a25):'—'}</td>
+      </tr>`;
+    }).join('');
+    _attEl.innerHTML=`<thead><tr style='background:rgba(109,40,217,.07)'><th style='padding:5px 10px;text-align:left;font-size:10px;font-family:JetBrains Mono,monospace;color:#5b21b6'>Day</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:#5b21b6;background:var(--c-att)'>Paid tickets</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:#5b21b6;background:var(--c-att)'>Guest tickets</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:#5b21b6;background:var(--c-att)'>No-show (6%)</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:#5b21b6;font-weight:700;background:var(--c-att)'>Att. est. 2026</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:var(--y25);background:var(--c-att)'>Att. 2025 Final</th><th style='padding:5px 10px;text-align:right;font-size:10px;font-family:JetBrains Mono,monospace;color:var(--mu);background:var(--c-att)'>Δ</th></tr></thead><tbody>${_rows}</tbody>`;
+  }
   updateGuestActuals();
 
   const d10=Object.keys(DTF26).map(Number).sort((a,b)=>a-b).slice(0,10).reverse(); // oldest left, newest right
@@ -1080,7 +1037,8 @@ function saveGuests(){
   localStorage.setItem('jm_guests',JSON.stringify({sat:get('sat'),sun:get('sun'),mon:get('mon'),combi:get('combi')}));
   const ok=document.getElementById('guest-ok');
   if(ok){ok.textContent='Saved ✓';setTimeout(()=>ok.textContent='',3000);}
-  bOv();  updateGuestActuals();
+  bOv();
+  updateGuestActuals();
 }
 
 async function init(){
