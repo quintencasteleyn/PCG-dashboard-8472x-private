@@ -474,15 +474,18 @@ function updateGuestActuals(){
 }
 
 function bOv(){
-  const SHOWN_KEYS=['Saturday','Sunday','Monday (Public holiday)','Combi (Saturday, Sunday, Monday)',
+  // 2026 keys use 'Combi (Saturday, Sunday, Monday)'; 2025 uses 'Combi (Friday, Saturday, Sunday, Monday)'
+  const SHOWN_KEYS_26=['Saturday','Sunday','Monday (Public holiday)','Combi (Saturday, Sunday, Monday)',
     'Friday','Saturday - CERA','Sunday - CERA','Monday (Public holiday) - CERA','Friday - CERA'];
-  const tt26=SHOWN_KEYS.reduce((s,k)=>s+(T26[k]?.t||0),0);
+  const tt26=SHOWN_KEYS_26.reduce((s,k)=>s+(T26[k]?.t||0),0);
   const gr26=Object.values(T26).reduce((s,v)=>s+v.r,0);
   const nt26=netRev(gr26,tt26,2026);
   const minD=minDTF(D26);
   let t25w={};D25.forEach(r=>{if(r.dtf>=minD&&r.pos!=='Guestlist'){const k=tKey(r);if(!t25w[k])t25w[k]=0;t25w[k]+=r.tickets;}});
-  const tt25w=SHOWN_KEYS.reduce((s,k)=>s+(t25w[k]||0),0);
-  const tt25f=SHOWN_KEYS.reduce((s,k)=>s+(F25[k]||0),0);
+  // tt25w: sum ALL t25w keys (tKey already handles Combi key correctly from raw data)
+  const tt25w=Object.values(t25w).reduce((s,v)=>s+v,0);
+  // tt25f: sum ALL F25 keys (F25 uses 2025 Combi key)
+  const tt25f=Object.values(F25).reduce((s,v)=>s+v,0);
 
   document.getElementById('krow-ov').innerHTML=[
     {l:'Total tickets — 2026',v:N(tt26),s:'excl. guestlist tickets',c:Y26},
