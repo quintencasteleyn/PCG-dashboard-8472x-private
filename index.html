@@ -313,7 +313,7 @@ const API='https://script.google.com/macros/s/AKfycby_-Y5w3AC6sV-nPRsOmNgZ-rTQk8
 // ── CONFIG ──────────────────────────────────
 let DCAP={Saturday:2800,Sunday:2500,Monday:2550};
 let DGUESTS25={Saturday:407,Sunday:503,Monday:645,Combi:200};
-let GUESTS={'Saturday':2800,'Sunday':2500,'Monday (Public holiday)':2550,'Combi (Saturday, Sunday, Monday)':200};
+let GUESTS={'Saturday':500,'Sunday':500,'Monday (Public holiday)':500,'Combi (Saturday, Sunday, Monday)':200};
 let TYPE_CAP={
   'Saturday':2800,'Sunday':2500,'Monday (Public holiday)':2550,
   'Combi (Saturday, Sunday, Monday)':690
@@ -348,7 +348,7 @@ function CW(k){
 const WAVE_ORDER=['Presale','Early Bird','Regular','Final Wave','Cera - Early Bird','Cera - Regular','Cera - Final Wave'];
 const NO_SHOW=0.06;
 const ATT25={'Saturday':2550,'Sunday':2510,'Monday (Public holiday)':2755};
-const F25={'Saturday':2800,'Sunday':2500,'Monday (Public holiday)':2550,
+const F25={'Saturday':1272,'Sunday':1164,'Monday (Public holiday)':1270,
   'Friday':476,'Friday - CERA':79,
   'Combi (Friday, Saturday, Sunday, Monday)':440,'Saturday - CERA':356,
   'Sunday - CERA':253,'Monday (Public holiday) - CERA':200};
@@ -535,7 +535,7 @@ function bOv(){
     const t26day=(T26[d.k]||{t:0}).t;
     const t25wv=(t25w[d.k25]||0);
     const f25=(F25[d.k25]||0);
-    const cap=DCAP[d.l]||4240;
+    const cap=DCAP[d.l]||3050;
     const cera=(T26[d.k+' - CERA']||{t:0}).t;
     const g26day=GUESTS[d.k]||500;
     const g26combi=GUESTS['Combi (Saturday, Sunday, Monday)']||200;
